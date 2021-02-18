@@ -33,18 +33,18 @@ namespace ConstructionLine.CodingChallenge
 
         public SearchResults Search(SearchOptions options)
         {
-            if (options == null)
+            if (_shirts == null) 
                 return new SearchResults();
 
             IEnumerable<Shirt> shirts = new List<Shirt>(_shirts);
-            if (options.Colors != null && options.Colors.Any() && _groupedByColor != null)
+            if (options?.Colors != null && options.Colors.Any() && _groupedByColor != null)
             {
-                shirts = options.Colors.SelectMany(x => _groupedByColor[x]);
+                shirts = options.Colors.Where(x => _groupedByColor.ContainsKey(x)).SelectMany(x => _groupedByColor[x]);
             }
 
-            if (options.Sizes != null && options.Sizes.Any() && _groupedBySize != null)
+            if (options?.Sizes != null && options.Sizes.Any() && _groupedBySize != null)
             {
-                shirts = shirts.Intersect(options.Sizes.SelectMany(x => _groupedBySize[x]));
+                shirts = shirts.Intersect(options.Sizes.Where(x => _groupedBySize.ContainsKey(x)).SelectMany(x => _groupedBySize[x]));
             }
 
             var shirtList = shirts.ToList();
